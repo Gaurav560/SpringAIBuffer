@@ -1,9 +1,13 @@
 package com.telusko.controller;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 @RestController
 public class HelloController {
@@ -41,5 +45,31 @@ public class HelloController {
                 .getText();
 
 
+    }
+
+
+    @GetMapping("/celebrity")
+    public String getCelebrityDetail(@RequestParam String name) {
+
+
+        String message = """
+                 List the details of the Famous personality: {name}\s
+                 along with their career achievements.
+                 And Show the details in readable format\s
+                \s""";
+
+
+        //creating a prompt out of this message
+        PromptTemplate template = new PromptTemplate(message);
+        Prompt prompt = template.create(Map.of("name", name));
+
+
+        return chatClient
+                .prompt(prompt)
+                .call()
+                .chatResponse()
+                .getResult()
+                .getOutput()
+                .getText();
     }
 }
