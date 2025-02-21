@@ -3,6 +3,8 @@ package com.telusko.controller;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +16,9 @@ public class HelloController {
 
 
     private final ChatClient chatClient;
+
+    @Value("classpath:/prompts/celeb-details.st")
+    private Resource celebPrompt;
 
     public HelloController(ChatClient.Builder builder) {
         this.chatClient = builder.build();
@@ -51,16 +56,17 @@ public class HelloController {
     @GetMapping("/celebrity")
     public String getCelebrityDetail(@RequestParam String name) {
 
-
-        String message = """
-                 List the details of the Famous personality: {name}\s
-                 along with their career achievements.
-                 And Show the details in readable format\s
-                \s""";
+//
+//        String message = """
+//                 List the details of the Famous personality: {name}\s
+//                 along with their career achievements.
+//                 And Show the details in readable format\s
+//                \s""";
 
 
         //creating a prompt out of this message
-        PromptTemplate template = new PromptTemplate(message);
+//        PromptTemplate template = new PromptTemplate(message);
+        PromptTemplate template = new PromptTemplate(celebPrompt);
         Prompt prompt = template.create(Map.of("name", name));
 
 
