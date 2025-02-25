@@ -1,5 +1,6 @@
 package com.telusko.controller;
 
+import com.telusko.model.Achievement;
 import com.telusko.model.Player;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.Generation;
@@ -52,6 +53,24 @@ public class PlayerController {
                         .getResult();
 
         return beanOutputConverter.convert(result.getOutput().getText());
+
+    }
+
+
+    @GetMapping("/achievement/playerName")
+    public List<Achievement> getAchievement(@RequestParam String playerName) {
+
+        String message = """
+                Generate a list of career achievements for the sportsperson {playerName}.
+                """;
+
+        PromptTemplate promptTemplate = new PromptTemplate(message);
+
+        Prompt prompt = promptTemplate.create(Map.of("playerName", playerName));
+        return chatClient.prompt(prompt).call().entity(
+                new ParameterizedTypeReference<List<Achievement>>() {
+                }
+        );
 
     }
 
